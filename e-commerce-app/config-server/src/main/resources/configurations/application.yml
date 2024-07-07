@@ -1,0 +1,24 @@
+# this file is generic config file and will be inherited by other config files
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      default-zone: http://localhost:8761/eureka/
+
+
+# this is set bcz we should not override the properties defined in the individual microservice application.yml file
+spring:
+  cloud:
+    config:
+      override-system-properties: false
+
+
+# configuring zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0

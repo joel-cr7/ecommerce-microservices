@@ -1,0 +1,50 @@
+
+
+server:
+  port: 8040
+
+spring:
+  data:
+    mongodb:
+      username: root
+      password: root
+      host: localhost
+      port: 27017
+      database: notification
+      authentication-database: admin
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092   # port on which kafka is running
+      group-id: paymentGroup, orderGroup
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+      # mention custom json deserializer as we are getting custom objects as values and not simple string
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      # this is to inform consumer about the type of object we are sending as value (mention package of class)
+      properties:
+        spring.json.trusted.packages: '*'
+
+        # specify the keys we receive from producer and
+        # package of classes from the notification service to which we want to deserialize
+        spring.json.type.mapping: orderConfirmation:com.ecommerce.microservices.kafka.order.OrderConfirmation, paymentConfirmation:com.ecommerce.microservices.kafka.payment.PaymentConfirmation
+
+
+  mail:
+    host: localhost
+    port: 1025
+    username: joel
+    password: joel
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000

@@ -1,0 +1,35 @@
+
+server:
+  port: 8070
+
+application:
+  config:
+    customer-url: http://localhost:8222/api/v1/customers
+    product-url: http://localhost:8222/api/v1/products
+    payment-url: http://localhost:8222/api/v1/payments
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5431/order
+    username: user
+    password: user
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092   # port on which kafka is running
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+      # mention custom json serializer as we are passing custom objects as values and not simple string
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      # this is to inform consumer about the type of object we are sending as value (mention package of class)
+      properties:
+        # the 'orderConfirmation' key can be anything, but in consumer we need to specify same key
+        spring.json.type.mapping: orderConfirmation:com.ecommerce.microservices.kafka.OrderConfirmation
